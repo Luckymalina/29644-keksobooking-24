@@ -23,9 +23,17 @@ const getRandomFloat = (from, to, symbols) => {
 };
 
 getRandomInteger(1,27);
+
 getRandomFloat(1, 30 , 4);
 
-const TYPE_APARTMENT = [
+const getRandomArrayInteger = (elements) => elements[getRandomInteger(0, elements.length - 1)]
+
+//массив строк — массив случайной длины из значений
+const getRandomArrayElements = (elements) => elements.slice(0,getRandomInteger(0,elements.length - 1));
+
+const getAuthor = (i) => (i > 9) ? `img/avatars/user${i}.png` : `img/avatars/user0${i}.png`;
+
+const TYPES_APARTMENTS = [
   'palace',
   'flat',
   'house',
@@ -33,7 +41,7 @@ const TYPE_APARTMENT = [
   'hotel',
 ];
 
-const FEATURES_APARTMENT = [
+const FEATURES_APARTMENTS = [
   'wifi',
   'dishwasher',
   'parking',
@@ -42,65 +50,51 @@ const FEATURES_APARTMENT = [
   'conditioner',
 ];
 
-const CHECKIN_APARTMENT = [
+const CHECKIN_APARTMENTS = [
   '12:00',
   '13:00',
   '14:00',
 ];
 
-const CHECKOUT_APARTMENT = [
+const CHECKOUT_APARTMENTS = [
   '12:00',
   '13:00',
   '14:00',
 ];
 
-const PHOTOS_APARTMENT = [
+const PHOTOS_APARTMENTS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-const getAuthor = (i) => {
-  if(i > 9) {
-    return {
-      avatar: `img/avatars/user${  i  }.png`,
-    };
-  }
-  else {
-    return {
-      // eslint-disable-next-line no-useless-concat
-      avatar: `${'img/avatars/user' + '0'}${  i  }.png`,
-    };
-  }
-};
-
 const getLocation = () => ({
-  lat: getRandomFloat(35.65000, 35.70000,5),
-  lng: getRandomFloat(139.70000,139.80000,5),
-});
+  lat: getRandomInteger(35.65000, 35.70000),
+  lng: getRandomInteger(139.70000, 139.80000)
+})
 
-const map = (i) => {
-  const currentLocation = getLocation();
-  return {
+const createObjects = (i) => {
+  const currentLocation = getLocation(i);
+
+  return  {
     author: getAuthor(i),
     offer: {
-      title: 'Сдаются апартаменты',
-      address: `${currentLocation.lat  }, ${  currentLocation.lng}`,
-      price: getRandomInteger(500, 1000000),
-      type: getRandomArrayElement(TYPE_APARTMENT),
+      title: 'Свободные апартаменты',
+      address: `${currentLocation.lat},${currentLocation.lng}`,
+      price: getRandomInteger(1, 1000000),
+      type: getRandomArrayInteger(TYPES_APARTMENTS),
       rooms: getRandomInteger(1, 100),
-      guests: getRandomInteger(1, 100),
-      checkin: CHECKIN_APARTMENT[getRandomInteger(0,CHECKIN_APARTMENT.length - 1)],
-      checkout: CHECKOUT_APARTMENT[getRandomInteger(0,CHECKOUT_APARTMENT.length - 1)],
-      features: getRandomArrayElements(FEATURES_APARTMENT),
-      photos: getRandomArrayElements(PHOTOS_APARTMENT),
+      guests: getRandomInteger(1, 300),
+      checkin: getRandomArrayInteger(CHECKIN_APARTMENTS),
+      checkout: getRandomArrayInteger(CHECKOUT_APARTMENTS),
+      features: getRandomArrayElements(FEATURES_APARTMENTS),
+      description: 'Просторное помещение, можно с животными',
+      photos: getRandomArrayElements(PHOTOS_APARTMENTS)
     },
     location: currentLocation,
-  };
-};
+  }
+}
 
-const adverts = new Array(10).fill(null).map((el,i) => map(i));
+const customObjects = Array.from({length: 10}, createObjects);
 
-console.log(adverts);
-
-export {getAuthor, getLocation, map};
+console.log(customObjects);
