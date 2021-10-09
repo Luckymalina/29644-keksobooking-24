@@ -26,7 +26,7 @@ getRandomInteger(1,27);
 
 getRandomFloat(1, 30 , 4);
 
-const getRandomArrayInteger = (elements) => elements[getRandomInteger(0, elements.length - 1)]
+const getRandomArrayInteger = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
 //массив строк — массив случайной длины из значений
 const getRandomArrayElements = (elements) => elements.slice(0,getRandomInteger(0,elements.length - 1));
@@ -71,7 +71,7 @@ const PHOTOS_APARTMENTS = [
 const getLocation = () => ({
   lat: getRandomInteger(35.65000, 35.70000),
   lng: getRandomInteger(139.70000, 139.80000)
-})
+});
 
 const createObjects = (i) => {
   const currentLocation = getLocation(i);
@@ -93,7 +93,7 @@ const createObjects = (i) => {
     },
     location: currentLocation,
   }
-}
+};
 
 const customObjects = Array.from({length: 10}, createObjects);
 
