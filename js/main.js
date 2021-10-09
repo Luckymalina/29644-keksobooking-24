@@ -31,7 +31,7 @@ const getRandomArrayInteger = (elements) => elements[getRandomInteger(0, element
 //массив строк — массив случайной длины из значений
 const getRandomArrayElements = (elements) => elements.slice(0,getRandomInteger(0,elements.length - 1));
 
-const getAuthor = (i) => (i > 9) ? `img/avatars/user${i}.png` : `img/avatars/user0${i}.png`;
+const getAuthor = (index) => (index > 9) ? `img/avatars/user${index}.png` : `img/avatars/user0${index}.png`;
 
 const TYPES_APARTMENTS = [
   'palace',
@@ -70,7 +70,7 @@ const PHOTOS_APARTMENTS = [
 
 const getLocation = () => ({
   lat: getRandomInteger(35.65000, 35.70000),
-  lng: getRandomInteger(139.70000, 139.80000)
+  lng: getRandomInteger(139.70000, 139.80000),
 });
 
 const createObjects = (i) => {
@@ -89,7 +89,7 @@ const createObjects = (i) => {
       checkout: getRandomArrayInteger(CHECKOUT_APARTMENTS),
       features: getRandomArrayElements(FEATURES_APARTMENTS),
       description: 'Просторное помещение, можно с животными',
-      photos: getRandomArrayElements(PHOTOS_APARTMENTS)
+      photos: getRandomArrayElements(PHOTOS_APARTMENTS),
     },
     location: currentLocation,
   }
