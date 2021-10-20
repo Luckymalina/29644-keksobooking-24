@@ -96,6 +96,6 @@ const createObjects = (el,i) => {
   }
 };
 
-const customObjects = Array.from({length: 10},() => createObjects());
+const customObjects = Array.from({length: 10}, (el, i) => createObjects(el, i));
 
-// console.log(customObjects);
+console.log(customObjects);
