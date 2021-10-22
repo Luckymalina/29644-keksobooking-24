@@ -1,8 +1,8 @@
-import {getRandomInteger} from 'utils/get-random-integer.js';
-import {getLocation} from 'data/get-location.js';
-import {getAuthorAvatar} from 'data/get-author-avatar.js';
-import {getRandomArrayInteger} from 'data/get-random-array-integer.js';
-import {getRandomArrayElements} from 'data/get-random-array-elements.js';
+import {getRandomInteger} from './utils/get-random-integer.js';
+import {getLocation} from './data/get-location.js';
+import {getAuthorAvatar} from './data/get-author-avatar.js';
+import {getRandomArrayInteger} from './data/get-random-array-integer.js';
+import {getRandomArrayElements} from './data/get-random-array-elements.js';
 
 const TYPES_APARTMENTS = [
   'palace',
@@ -61,6 +61,4 @@ const createObjects = (el,i) => {
   };
 };
 
-const customObjects = Array.from({length: 10}, (el, i) => createObjects(el, i));
-
-export {customObjects};
+export {createObjects};
