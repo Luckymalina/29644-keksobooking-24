@@ -5,4 +5,4 @@ const getLocation = () => ({
   lng: getRandomInteger(139.70000, 139.80000),
 });
 
-export default getLocation;
+export {getLocation};

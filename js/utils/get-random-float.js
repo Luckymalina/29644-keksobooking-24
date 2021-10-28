@@ -10,4 +10,4 @@ const getRandomFloat = (from, to, symbols) => {
 
 };
 
-export default getRandomFloat;
+export {getRandomFloat};
