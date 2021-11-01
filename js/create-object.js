@@ -1,8 +1,8 @@
-import {getRandomInteger} from './utils/get-random-integer.js';
-import {getLocation} from './data/get-location.js';
-import {getAuthorAvatar} from './data/get-author-avatar.js';
-import {getRandomArrayInteger} from './data/get-random-array-integer.js';
-import {getRandomArrayElements} from './data/get-random-array-elements.js';
+import getRandomInteger from './utils/get-random-integer.js';
+import getLocation from './data/get-location.js';
+import getAuthorAvatar from './data/get-author-avatar.js';
+import getRandomArrayInteger from './data/get-random-array-integer.js';
+import getRandomArrayElements from './data/get-random-array-elements.js';
 
 const TYPES_APARTMENTS = [
   'palace',
@@ -43,7 +43,9 @@ const createObject = (el, i) => {
   const currentLocation = getLocation(i);
 
   return {
-    author: getAuthorAvatar(i),
+    author: {
+      avatar:  getAuthorAvatar(i),
+    },
     offer: {
       title: 'Свободные апартаменты',
       address: `${currentLocation.lat},${currentLocation.lng}`,
@@ -61,4 +63,4 @@ const createObject = (el, i) => {
   };
 };
 
-export {createObject};
+export default createObject;

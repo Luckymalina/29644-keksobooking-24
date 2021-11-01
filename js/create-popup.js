@@ -1,5 +1,3 @@
-import {createObject} from './create-object.js';
-
 const HOUSES = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -8,21 +6,10 @@ const HOUSES = {
   hotel: 'Отель',
 };
 
-const POSSIBLE_FEATURES = {
-  wifi: 'Вайфай',
-  dishwasher: 'Посудомоечная машина',
-  parking: 'Парковка',
-  washer: 'Cтиральная машина',
-  elevator: 'Лифт',
-  conditioner: 'Кондиционер',
-}
-
-
-const dataPopup = createObject();
-
 const createPopupElement = (dataPopup) => {
+  const {author, offer} = dataPopup;
   const popup = document.querySelector('#card').content.querySelector('.popup');
-  const mapCanvas = document.querySelector('#map-canvas');
+
   const similarPopupFragment = document.createDocumentFragment();
   const newPopupItem = popup.cloneNode(true);
 
@@ -33,24 +20,24 @@ const createPopupElement = (dataPopup) => {
   const popupOptionTypeHotels = newPopupItem.querySelector('.popup__type');
   const popupOptionCapacity = newPopupItem.querySelector('.popup__text--capacity');
   const popupTimeStaying = newPopupItem.querySelector('.popup__text--time');
-  const popupOptionDescription = newPopupItem.querySelector('.popup__popup__description');
+  const popupOptionDescription = newPopupItem.querySelector('.popup__description');
 
   popupAvatar.src = author.avatar ? author.avatar.value : popupAvatar.remove();
   popupTitle.textContent = offer.title ? offer.title : popupTitle.remove();
-  popupAddress.textContent = offer.address ? offer.address : popupAddresss.remove();
+  popupAddress.textContent = offer.address ? offer.address : popupAddress.remove();
   popupOptionPrice.textContent = offer.price ? `${offer.price} ₽/ночь` : popupOptionPrice.remove();
   popupOptionTypeHotels.textContent = offer.type ? HOUSES[offer.type] : popupOptionTypeHotels.remove();
-  popupOptionCapacity.textContent = offer.rooms ? `${offer.rooms} комнат для ${offer.guests} гостей` : popupOptionCapacity.remove();  
+  popupOptionCapacity.textContent = offer.rooms ? `${offer.rooms} комнат для ${offer.guests} гостей` : popupOptionCapacity.remove();
   popupOptionDescription.textContent = offer.description ? offer.description : popupOptionDescription.remove();
   if (offer.checkin || offer.checkout) {
-      const checkin = `${offer.checkin ? `Заезд после ${offer.checkin}` : ''}`;
-      const checkout = `${offer.checkout ? `${ offer.checkin ? 'выезд' : 'Выезд' } до ${offer.checkout}` : ''}`;
-      popupTimeStaying.textContent = `${checkin}${offer.checkin && offer.checkout ? ', ' : ''}${checkout}`;
-  } 
-  else {
-      popupTimeStaying.remove();
+    const checkin = `${offer.checkin ? `Заезд после ${offer.checkin}` : ''}`;
+    const checkout = `${offer.checkout ? `${ offer.checkin ? 'выезд' : 'Выезд' } до ${offer.checkout}` : ''}`;
+    popupTimeStaying.textContent = `${checkin}${offer.checkin && offer.checkout ? ', ' : ''}${checkout}`;
   }
-  
+  else {
+    popupTimeStaying.remove();
+  }
+
 
   // В список .popup__features выведите все доступные удобства в объявлении.
   const popupFeatures = newPopupItem.querySelector('.popup__features');
@@ -66,9 +53,9 @@ const createPopupElement = (dataPopup) => {
     }
   });
 
- 
+
   // В блок .popup__photos выведите все фотографии из списка offer.photos. Каждая из строк массива photos должна
-  // записываться как атрибут src соответствующего изображения. 
+  // записываться как атрибут src соответствующего изображения.
   const photoContainer = newPopupItem.querySelector('.popup__photos');
   const photoItem = photoContainer.querySelector('.popup__photo');
   const dataPhotos = offer.photos;
@@ -80,10 +67,8 @@ const createPopupElement = (dataPopup) => {
     photoContainer.appendChild(photoNew);
   });
 
-  if (i === 0) {
-    similarListElement.appendChild(offerElement);
-  }
 
-}
+  return newPopupItem;
+};
 
-export {createPopupElement};
+export default createPopupElement;

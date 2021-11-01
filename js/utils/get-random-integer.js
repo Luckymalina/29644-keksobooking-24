@@ -10,4 +10,4 @@ const getRandomInteger = (from, to) => {
 
 };
 
-export {getRandomInteger};
+export default getRandomInteger;
