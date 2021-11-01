@@ -1,8 +1,8 @@
-import {getRandomInteger} from './utils/get-random-integer.js';
-import {getLocation} from './data/get-location.js';
-import {getAuthorAvatar} from './data/get-author-avatar.js';
-import {getRandomArrayInteger} from './data/get-random-array-integer.js';
-import {getRandomArrayElements} from './data/get-random-array-elements.js';
+import getRandomInteger from './utils/get-random-integer.js';
+import getLocation from './data/get-location.js';
+import getAuthorAvatar from './data/get-author-avatar.js';
+import getRandomArrayInteger from './data/get-random-array-integer.js';
+import getRandomArrayElements from './data/get-random-array-elements.js';
 
 const TYPES_APARTMENTS = [
   'palace',
@@ -39,11 +39,13 @@ const PHOTOS_APARTMENTS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-const createObjects = (el,i) => {
+const createObject = (el, i) => {
   const currentLocation = getLocation(i);
 
   return {
-    author: getAuthorAvatar(i),
+    author: {
+      avatar:  getAuthorAvatar(i),
+    },
     offer: {
       title: 'Свободные апартаменты',
       address: `${currentLocation.lat},${currentLocation.lng}`,
@@ -54,11 +56,11 @@ const createObjects = (el,i) => {
       checkin: getRandomArrayInteger(CHECKIN_APARTMENTS),
       checkout: getRandomArrayInteger(CHECKOUT_APARTMENTS),
       features: getRandomArrayElements(FEATURES_APARTMENTS),
-      description: 'Просторное помещение, можно с животными',
+      description: '',
       photos: getRandomArrayElements(PHOTOS_APARTMENTS),
     },
     location: currentLocation,
   };
 };
 
-export {createObjects};
+export default createObject;
