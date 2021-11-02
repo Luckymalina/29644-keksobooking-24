@@ -10,7 +10,7 @@ const createPopupElement = (dataPopup) => {
   const {author, offer} = dataPopup;
   const popup = document.querySelector('#card').content.querySelector('.popup');
 
-  const similarPopupFragment = document.createDocumentFragment();
+  // const similarPopupFragment = document.createDocumentFragment();
   const newPopupItem = popup.cloneNode(true);
 
   const popupAvatar = newPopupItem.querySelector('.popup__avatar');
@@ -22,7 +22,7 @@ const createPopupElement = (dataPopup) => {
   const popupTimeStaying = newPopupItem.querySelector('.popup__text--time');
   const popupOptionDescription = newPopupItem.querySelector('.popup__description');
 
-  popupAvatar.src = author.avatar ? author.avatar.value : popupAvatar.remove();
+  popupAvatar.src = author.avatar ? author.avatar : popupAvatar.remove();
   popupTitle.textContent = offer.title ? offer.title : popupTitle.remove();
   popupAddress.textContent = offer.address ? offer.address : popupAddress.remove();
   popupOptionPrice.textContent = offer.price ? `${offer.price} ₽/ночь` : popupOptionPrice.remove();
