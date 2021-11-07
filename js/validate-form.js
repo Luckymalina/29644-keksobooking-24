@@ -1,14 +1,3 @@
-const MIN_NAME_LENGTH = 30;
-const MAX_NAME_LENGTH = 100;
-const MIN_NIGHT_COST = 0;
-const MAX_NIGHT_COST = 1000000;
-// const MIN_PRICE_FOR_TYPES = {
-//   'palace': 10000,
-//   'flat': 1000,
-//   'house': 5000,
-//   'bungalow': 0,
-//   'hotel': 3000,
-// };
 const setCostFotType = (nameOfType) => {
   switch (nameOfType) {
     case 'flat':
@@ -33,8 +22,8 @@ const objectFormNightPrice = objectForm.querySelector('#price');
 const objectFormType = objectForm.querySelector('#type');
 const objectFormRoomNumber = objectForm.querySelector( '#room_number');
 const objectFormCapacity = objectForm.querySelector( '#capacity');
-// const objectFormCheckIn = objectForm.querySelector( '#timein');
-// const objectFormCheckOut = objectForm.querySelector( '#timeout');
+const objectFormCheckIn = objectForm.querySelector( '#timein');
+const objectFormCheckOut = objectForm.querySelector( '#timeout');
 
 //определение допустимых значений в поле Количество мест в зависимости от количества комнат
 const setCapacity = (rooms) => {
@@ -108,7 +97,17 @@ const onObjectTypeChange = (evt) => {
   objectFormNightPrice.setAttribute('min', price);
 };
 
+//Синхронизация полей заезда/выезда
+const onChangeCheckIn = () => {
+  objectFormCheckIn.value = objectFormCheckOut.value;
+};
+const onChangeCheckOut = () => {
+  objectFormCheckIn.value = objectFormCheckOut.value;
+};
+
 objectFormTitle.addEventListener('invalid', onObjectTitleValidation);
 objectFormType.addEventListener('change', onObjectTypeChange);
 objectFormNightPrice.addEventListener('invalid', onObjectPriceValidation);
 objectFormRoomNumber.addEventListener('change', onRoomsNumberValidation);
+objectFormCheckIn.addEventListener('change', onChangeCheckIn);
+objectFormCheckOut.addEventListener('change', onChangeCheckOut);
