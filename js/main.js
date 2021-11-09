@@ -1,6 +1,8 @@
 import createObject from './create-object.js';
 import createPopupElement from './create-popup-element.js';
-import setNoActiveState from './set-page-state.js';
+import setState from './set-state.js';
+import './validate-form.js';
+
 const COUNT_OBJECT = 10;
 const customObjects = Array.from({length: COUNT_OBJECT}, (el, i) => createObject(el, i));
 const popupsCollection = [];
@@ -11,6 +13,5 @@ for (const item of customObjects){
 }
 
 mapCanvas.appendChild(popupsCollection[2]);
-setNoActiveState();
-// setActiveState();
+setState();
 
