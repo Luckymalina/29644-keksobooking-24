@@ -6,7 +6,7 @@ const filterContainerElements = filterContainer.querySelectorAll('input, select,
 const setState = (state) => {
 
   switch(state) {
-    case 'true':
+    case true:
       formContainer.classList.remove('ad-form--disabled');
       formContainerElements.forEach((element) => {
         element.removeAttribute('disabled', 'disabled');
@@ -16,7 +16,7 @@ const setState = (state) => {
         element.removeAttribute('disabled', 'disabled');
       });
       break;
-    case 'false':
+    case false:
       formContainer.classList.add('ad-form--disabled');
       formContainerElements.forEach((element) => {
         element.setAttribute('disabled', 'disabled');
