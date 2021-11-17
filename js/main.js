@@ -1,17 +1,32 @@
-import createObject from './create-object.js';
-import createPopupElement from './create-popup-element.js';
+import {initializeMap, setMainPin, setCommonPins, MAX_NUMBER_PINS_ON_MAP} from './map.js';
+import {filterFormInitialize} from './filter-form.js';
+import {getData} from './api-methods.js';
+import {showGetDataErrorMessage} from './ui-messages.js';
 import setState from './set-state.js';
-import './validate-form.js';
+import shuffleArray from './utils/shuffle-array.js';
+import createPopupElement from './create-popup-element.js';
+import {loadLang} from './load-lang.js';
+import {formInitialize, setAddress} from './validate-form.js';
+import getCurrentLang from './utils/get-current-lang.js';
 
-const COUNT_OBJECT = 10;
-const customObjects = Array.from({length: COUNT_OBJECT}, (el, i) => createObject(el, i));
-const popupsCollection = [];
-const mapCanvas = document.querySelector('#map-canvas');
+const GET_ADVERTS_DATA_URL = 'https://24.javascript.pages.academy/keksobooking/data';
 
-for (const item of customObjects){
-  popupsCollection.push(createPopupElement(item));
-}
+const map = initializeMap();
 
-mapCanvas.appendChild(popupsCollection[2]);
-setState();
+const generateCommonPins = (advertCards) => {
+  filterFormInitialize(advertCards);
+  setCommonPins(shuffleArray(advertCards).slice(0, MAX_NUMBER_PINS_ON_MAP), createPopupElement);
+  setState(true);
+};
 
+const pageInit = () => {
+  map.whenReady(() => {
+    setState(true);
+    setMainPin(setAddress);
+    getData(GET_ADVERTS_DATA_URL, generateCommonPins, showGetDataErrorMessage, 'advertCards');
+    formInitialize();
+  });
+};
+
+setState(true);
+loadLang(getCurrentLang()).finally(pageInit);
