@@ -37,15 +37,11 @@ const createPopupElement = (dataPopup) => {
   else {
     popupTimeStaying.remove();
   }
-
-
-  // В список .popup__features выведите все доступные удобства в объявлении.
   const popupFeatures = newPopupItem.querySelector('.popup__features');
   const popupFeatureItems = popupFeatures.querySelectorAll('.popup__feature');
 
   popupFeatureItems.forEach((featureItem) => {
-    const isNecessary = offer.features.some(
-      (feature) => featureItem.classList.contains(`popup__feature--${feature}`),
+    const isNecessary = offer.features.some((feature) => featureItem.classList.contains(`popup__feature--${feature}`),
     );
 
     if (!isNecessary) {

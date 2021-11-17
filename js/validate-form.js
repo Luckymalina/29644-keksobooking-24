@@ -1,3 +1,12 @@
+import formatString from './utils/format-string.js';
+import {getMessage, DEFAULT_MESSAGES} from './load-lang.js';
+import {showSendDataErrorMessage, showSendDataSuccessMessage} from './ui-messages.js';
+import {sendData} from './api-methods.js';
+import setState from './set-state.js';
+import {resetForm as resetFilterForm} from './filter-form.js';
+import {resetMainMarker, setMapDefaultView, mapClosePopup} from './map.js';
+import {setAvatarElementChange, setImagesElementChange, clearPreviewImages} from './preview-advert-form-images.js';
+
 const setCostFotType = (nameOfType) => {
   switch (nameOfType) {
     case 'flat':
@@ -14,9 +23,11 @@ const setCostFotType = (nameOfType) => {
       return 0;
   }
 };
-
+const TITLE_MIN_LENGTH = 30;
+const TITLE_MAX_LENGTH = 100;
+const PRICE_MAX_VALUE = 1000000;
 const objectForm = document.querySelector('.ad-form');
-// const objectFormAddress = objectForm.querySelector('#address');
+const objectFormAddress = objectForm.querySelector('#address');
 const objectFormTitle = objectForm.querySelector('#title');
 const objectFormNightPrice = objectForm.querySelector('#price');
 const objectFormType = objectForm.querySelector('#type');
@@ -24,6 +35,12 @@ const objectFormRoomNumber = objectForm.querySelector( '#room_number');
 const objectFormCapacity = objectForm.querySelector( '#capacity');
 const objectFormCheckIn = objectForm.querySelector( '#timein');
 const objectFormCheckOut = objectForm.querySelector( '#timeout');
+const objectFormButtonReset = objectForm.querySelector( '.ad-form__reset');
+
+//настройка координат жилья
+const setAddress = (coordinates) => {
+  objectFormAddress.value = `${coordinates.lat}, ${coordinates.lng}`;
+};
 
 //определение допустимых значений в поле Количество мест в зависимости от количества комнат
 const setCapacity = (rooms) => {
@@ -65,29 +82,51 @@ const onRoomsNumberValidation = (evt) => {
 
 //Валидация поля заголовка
 const onObjectTitleValidation = () => {
-  if (objectFormTitle.validity.tooShort) {
-    objectFormTitle.setCustomValidity('Заголовок объявления должен состоять минимум их 30-ти символов');
-  } else if (objectFormTitle.validity.tooLong) {
-    objectFormTitle.setCustomValidity('Заголовок объявления не должен превышать 100 символов');
-  } else if (objectFormTitle.validity.valueMissing) {
-    objectFormTitle.setCustomValidity('Обязательное поле');
-  } else {
-    objectFormTitle.setCustomValidity('');
+  // if (objectFormTitle.validity.tooShort) {
+  //   objectFormTitle.setCustomValidity('Заголовок объявления должен состоять минимум их 30-ти символов');
+  // } else if (objectFormTitle.validity.tooLong) {
+  //   objectFormTitle.setCustomValidity('Заголовок объявления не должен превышать 100 символов');
+  // } else if (objectFormTitle.validity.valueMissing) {
+  //   objectFormTitle.setCustomValidity('Обязательное поле');
+  // } else {
+  //   objectFormTitle.setCustomValidity('');
+  // }
+  // // return objectFormTitle.reportValidity();
+  // return objectFormTitle;
+
+  const titleElementLength = objectFormTitle.value.length;
+  let reportMessage = '';
+
+  if (objectFormTitle.validity.valueMissing) {
+    reportMessage = getMessage(DEFAULT_MESSAGES.required);
+  } else if (titleElementLength < TITLE_MIN_LENGTH) {
+    reportMessage = formatString(getMessage(DEFAULT_MESSAGES.tooShortLength), TITLE_MIN_LENGTH - titleElementLength);
+  } else if (titleElementLength > TITLE_MAX_LENGTH) {
+    reportMessage = formatString(getMessage(DEFAULT_MESSAGES.tooLongLength), objectFormTitle - TITLE_MAX_LENGTH);
   }
+  objectFormTitle.setCustomValidity(reportMessage);
+
+  return objectFormTitle.reportValidity();
 };
 
 //Валидация поля стоимости
 const onObjectPriceValidation = () => {
-  if (objectFormNightPrice.validity.rangeUnderflow) {
-    const minimalPrice = objectFormNightPrice.getAttribute('min');
-    objectFormNightPrice.setCustomValidity(`Цена за ночь не должна быть меньше ${minimalPrice}`);
-  } else if (objectFormNightPrice.validity.rangeOverflow) {
-    objectFormNightPrice.setCustomValidity('Цена за ночь не должна превышать значения 1000000');
+  const priceElementValue = Number(objectFormNightPrice.value);
+  const priceMinValueByType = Number(objectFormNightPrice.min);
+  let reportMessage = '';
+
+  if (priceElementValue > PRICE_MAX_VALUE) {
+    reportMessage = formatString(getMessage(DEFAULT_MESSAGES.tooBigPriceValue), priceElementValue - PRICE_MAX_VALUE, PRICE_MAX_VALUE);
+  } else if (priceElementValue < priceMinValueByType || objectFormNightPrice.validity.rangeUnderflow) {
+    reportMessage = formatString(getMessage(DEFAULT_MESSAGES.tooSmallPriceValue), priceMinValueByType);
+  } else if (objectFormNightPrice.validity.typeMismatch || objectFormNightPrice.validity.badInput) {
+    reportMessage = getMessage(DEFAULT_MESSAGES.numberRequired);
   } else if (objectFormNightPrice.validity.valueMissing) {
-    objectFormNightPrice.setCustomValidity('Обязательное поле');
-  } else {
-    objectFormNightPrice.setCustomValidity('');
+    reportMessage = getMessage(DEFAULT_MESSAGES.required);
   }
+  objectFormNightPrice.setCustomValidity(reportMessage);
+
+  return objectFormNightPrice.reportValidity();
 };
 
 //Синхронизация поля тип жилья с полем цены
@@ -105,9 +144,69 @@ const onChangeCheckOut = () => {
   objectFormCheckIn.value = objectFormCheckOut.value;
 };
 
-objectFormTitle.addEventListener('invalid', onObjectTitleValidation);
-objectFormType.addEventListener('change', onObjectTypeChange);
-objectFormNightPrice.addEventListener('invalid', onObjectPriceValidation);
-objectFormRoomNumber.addEventListener('change', onRoomsNumberValidation);
-objectFormCheckIn.addEventListener('change', onChangeCheckIn);
-objectFormCheckOut.addEventListener('change', onChangeCheckOut);
+// ===================================================================================================
+
+const validateForm = () => ![
+  onObjectTitleValidation(),
+  onObjectPriceValidation(),
+].some((value) => !value);
+
+const formInitialize = () => {
+  setCapacity();
+  onObjectPriceValidation();
+
+  objectFormTitle.addEventListener('invalid', onObjectTitleValidation);
+  objectFormType.addEventListener('change', onObjectTypeChange);
+  objectFormNightPrice.addEventListener('invalid', onObjectPriceValidation);
+  objectFormRoomNumber.addEventListener('change', onRoomsNumberValidation);
+  objectFormCheckIn.addEventListener('change', onChangeCheckIn);
+  objectFormCheckOut.addEventListener('change', onChangeCheckOut);
+
+  setAvatarElementChange();
+  setImagesElementChange();
+};
+
+const resetForm = () => {
+  objectForm.reset();
+  onObjectPriceValidation();
+  setCapacity();
+  resetMainMarker(setAddress);
+};
+
+const onSuccessFormSubmit = () => {
+  resetForm();
+  resetFilterForm();
+  mapClosePopup();
+  setMapDefaultView();
+  setState(false);
+  showSendDataSuccessMessage();
+};
+
+const onErrorFormSubmit = () => {
+  setState(false);
+  showSendDataErrorMessage();
+};
+
+const onFormSubmit = () => setState(true);
+
+objectForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  if (validateForm()) {
+    const formData = new FormData(objectForm);
+    sendData(
+      objectForm.getAttribute('action'),
+      formData,
+      onSuccessFormSubmit,
+      onErrorFormSubmit,
+      onFormSubmit);
+  }
+});
+
+objectFormButtonReset.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetForm();
+});
+
+
+export {formInitialize, setAddress};
