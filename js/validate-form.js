@@ -5,7 +5,8 @@ import {sendData} from './api-methods.js';
 import setState from './set-state.js';
 import {resetForm as resetFilterForm} from './filter-form.js';
 import {resetMainMarker, setMapDefaultView, mapClosePopup} from './map.js';
-import {setAvatarElementChange, setImagesElementChange, clearPreviewImages} from './preview-advert-form-images.js';
+// import {setAvatarElementChange, setImagesElementChange, clearPreviewImages} from './preview-advert-form-images.js';
+import {setAvatarElementChange, setImagesElementChange} from './preview-advert-form-images.js';
 
 const setCostFotType = (nameOfType) => {
   switch (nameOfType) {

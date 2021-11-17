@@ -1,6 +1,6 @@
 const ZOOM_MAP_DEFAULT = 13;
 const PIN_DEFAULT_VALUE = [35.681729, 139.753927];
-const MAX_NUMBER_PINS_ON_MAP = 10;;
+const MAX_NUMBER_PINS_ON_MAP = 10;
 let map = undefined;
 let mainPin = undefined;
 const commonPins = [];
