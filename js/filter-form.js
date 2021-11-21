@@ -1,5 +1,5 @@
-import {removeCommonPins, setCommonPins, MAX_NUMBER_PINS_ON_MAP} from './map.js';
-import createPopupElement from './create-popup-element.js';
+import {removeCommonPins, MAX_COMMON_PINS_COUNT_ON_MAP, setCommonPins} from './map.js';
+import createPopupMarkup from './create-popup-markup.js';
 import debounce from './utils/debounce.js';
 
 const RERENDER_DELAY = 500;
@@ -7,7 +7,7 @@ const DEFAULT_TYPE_FILTER_VALUE = 'any';
 const DEFAULT_PRICE_FILTER_VALUE = 'any';
 const DEFAULT_ROOMS_NUMBER_FILTER_VALUE = 'any';
 const DEFAULT_GUESTS_NUMBER_FILTER_VALUE = 'any';
-const PRICE_FILTER_RANGE = {
+const PriceFilterRange = {
   low: {
     from: 0,
     to: 10000,
@@ -21,7 +21,7 @@ const PRICE_FILTER_RANGE = {
   },
 };
 
-const formElement = document.querySelector('.map__filters');
+const formElement = document.querySelector('form[name="filter-form"]');
 const typeFilterElement = formElement.querySelector('select[name="housing-type"]');
 const priceFilterElement = formElement.querySelector('select[name="housing-price"]');
 const roomsNumberFilterElement = formElement.querySelector('select[name="housing-rooms"]');
@@ -30,11 +30,11 @@ const featuresFilterElementList = formElement.querySelectorAll('input[name="feat
 
 let advertCards = {};
 
-const resetForm = () => {
+const resetFilterForm = () => {
   formElement.reset();
 };
 
-const filterFormInitialize = (cards) => {
+const initializeFilterForm = (cards) => {
   advertCards = cards;
 };
 
@@ -42,7 +42,7 @@ const filterByType = (card) => typeFilterElement.value === DEFAULT_TYPE_FILTER_V
   card.offer.type && card.offer.type === typeFilterElement.value;
 
 const filterByPrice = (card) => {
-  const priceCurrentType = PRICE_FILTER_RANGE[priceFilterElement.value];
+  const priceCurrentType = PriceFilterRange[priceFilterElement.value];
   if (priceFilterElement.value === DEFAULT_PRICE_FILTER_VALUE || !priceCurrentType) {
     return true;
   }
@@ -73,7 +73,7 @@ const filterByFeatures = (card) => {
   return cardFeaturesCount === featuresCheckedElementsList.length;
 };
 
-const renderFilteredCommonMarkers = () => {
+const renderFilteredCommonPins = () => {
   removeCommonPins();
 
   const filteredAdvertCards = [];
@@ -85,19 +85,29 @@ const renderFilteredCommonMarkers = () => {
       filterByFeatures(card)) {
       filteredAdvertCards.push(card);
     }
-    if (filteredAdvertCards.length === MAX_NUMBER_PINS_ON_MAP) {
+    if (filteredAdvertCards.length === MAX_COMMON_PINS_COUNT_ON_MAP) {
       break;
     }
   }
 
-  setCommonPins(filteredAdvertCards, createPopupElement);
+  setCommonPins(filteredAdvertCards, createPopupMarkup);
 };
 
-typeFilterElement.addEventListener('change', debounce(renderFilteredCommonMarkers, RERENDER_DELAY));
-priceFilterElement.addEventListener('change', debounce(renderFilteredCommonMarkers, RERENDER_DELAY));
-roomsNumberFilterElement.addEventListener('change', debounce(renderFilteredCommonMarkers, RERENDER_DELAY));
-guestsNumberFilterElement.addEventListener('change', debounce(renderFilteredCommonMarkers, RERENDER_DELAY));
-featuresFilterElementList.forEach((element) =>
-  element.addEventListener('click', debounce(renderFilteredCommonMarkers, RERENDER_DELAY)));
+const onTypeFilterChange = () => debounce(renderFilteredCommonPins, RERENDER_DELAY);
 
-export {resetForm, filterFormInitialize};
+const onPriceFilterChange = () => debounce(renderFilteredCommonPins, RERENDER_DELAY);
+
+const onRoomsNumberFilterChange = () => debounce(renderFilteredCommonPins, RERENDER_DELAY);
+
+const onGuestsNumberFilterChange = () => debounce(renderFilteredCommonPins, RERENDER_DELAY);
+
+const onFeaturesFilterElementClick = () => debounce(renderFilteredCommonPins, RERENDER_DELAY);
+
+typeFilterElement.addEventListener('change', onTypeFilterChange());
+priceFilterElement.addEventListener('change', onPriceFilterChange());
+roomsNumberFilterElement.addEventListener('change', onRoomsNumberFilterChange());
+guestsNumberFilterElement.addEventListener('change', onGuestsNumberFilterChange());
+featuresFilterElementList.forEach((element) =>
+  element.addEventListener('click', onFeaturesFilterElementClick()));
+
+export {resetFilterForm, initializeFilterForm, renderFilteredCommonPins};

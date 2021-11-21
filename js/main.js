@@ -1,12 +1,12 @@
-import {initializeMap, setMainPin, setCommonPins, MAX_NUMBER_PINS_ON_MAP} from './map.js';
-import {filterFormInitialize} from './filter-form.js';
+import {initializeMap, setMainPin, setCommonPins, MAX_COMMON_PINS_COUNT_ON_MAP} from './map.js';
+import {initializeFilterForm} from './filter-form.js';
 import {getData} from './api-methods.js';
 import {showGetDataErrorMessage} from './ui-messages.js';
-import setState from './set-state.js';
+import {setPageInactive, setAdvertFormActive, setMapFiltersFormActive} from './set-state.js';
 import shuffleArray from './utils/shuffle-array.js';
-import createPopupElement from './create-popup-element.js';
+import createPopupMarkup from './create-popup-markup.js';
+import {initializeAdvertForm, setAddress} from './advert-form.js';
 import {loadLang} from './load-lang.js';
-import {formInitialize, setAddress} from './validate-form.js';
 import getCurrentLang from './utils/get-current-lang.js';
 
 const GET_ADVERTS_DATA_URL = 'https://24.javascript.pages.academy/keksobooking/data';
@@ -14,19 +14,19 @@ const GET_ADVERTS_DATA_URL = 'https://24.javascript.pages.academy/keksobooking/d
 const map = initializeMap();
 
 const generateCommonPins = (advertCards) => {
-  filterFormInitialize(advertCards);
-  setCommonPins(shuffleArray(advertCards).slice(0, MAX_NUMBER_PINS_ON_MAP), createPopupElement);
-  setState(true);
+  initializeFilterForm(advertCards);
+  setCommonPins(shuffleArray(advertCards).slice(0, MAX_COMMON_PINS_COUNT_ON_MAP), createPopupMarkup);
+  setMapFiltersFormActive();
 };
 
-const pageInit = () => {
+const initializePage = () => {
   map.whenReady(() => {
-    setState(true);
+    setAdvertFormActive();
     setMainPin(setAddress);
-    getData(GET_ADVERTS_DATA_URL, generateCommonPins, showGetDataErrorMessage, 'advertCards');
-    formInitialize();
+    getData(GET_ADVERTS_DATA_URL, 'advertCards', generateCommonPins, showGetDataErrorMessage);
+    initializeAdvertForm();
   });
 };
 
-setState(true);
-loadLang(getCurrentLang()).finally(pageInit);
+setPageInactive();
+loadLang(getCurrentLang(), initializePage);

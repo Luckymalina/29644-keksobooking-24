@@ -1,4 +1,4 @@
-const ACCEPTED_FILE_TYPES = [
+const AcceptedFileTypes = [
   'image/apng',
   'image/avif',
   'image/gif',
@@ -12,7 +12,7 @@ const ACCEPTED_FILE_TYPES = [
 ];
 const DEFAULT_AVATAR_URL = 'img/muffin-grey.svg';
 
-const formElement = document.querySelector('.ad-form');
+const formElement = document.querySelector('form[name="advert-form"]');
 const avatarElement = formElement.querySelector('input[name="avatar"]');
 const avatarPreviewElement = formElement.querySelector('.ad-form-header__preview img');
 const imagesElement = formElement.querySelector('input[name="images"]');
@@ -21,7 +21,7 @@ const imagesPreviewFragment = document.querySelector('#images-preview').content.
 
 const setPreviewImageElement = (uploadImageElement, previewImageElement) => {
   const file = uploadImageElement.files[0];
-  if (ACCEPTED_FILE_TYPES.includes(file.type)) {
+  if (AcceptedFileTypes.includes(file.type)) {
     previewImageElement.src = URL.createObjectURL(file);
   }
 };

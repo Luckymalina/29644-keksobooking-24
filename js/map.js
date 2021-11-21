@@ -1,26 +1,26 @@
-const ZOOM_MAP_DEFAULT = 13;
-const PIN_DEFAULT_VALUE = [35.681729, 139.753927];
-const MAX_NUMBER_PINS_ON_MAP = 10;
-let map = undefined;
-let mainPin = undefined;
-const commonPins = [];
-const MainPinIcon = {
+const ZOOM_LEVEL = 13;
+const DEFAULT_PIN_COORDINATES = [35.681729, 139.753927];
+const MAX_COMMON_PINS_COUNT_ON_MAP = 10;
+const MainIcon = {
   URL: './img/main-pin.svg',
   SIZE: [52, 52],
   ANCHOR: [26, 52],
 };
-const CommonPinIcon = {
+const CommonIcon = {
   URL: './img/pin.svg',
   SIZE: [40, 40],
   ANCHOR: [20, 40],
 };
+let map = undefined;
+let mainPin = undefined;
+const commonPins = [];
 
 const setMapDefaultView = () => {
-  map.setView(PIN_DEFAULT_VALUE, ZOOM_MAP_DEFAULT);
+  map.setView(DEFAULT_PIN_COORDINATES, ZOOM_LEVEL);
 };
 
 const removeCommonPins = () => {
-  commonPins.forEach((pin) => pin.remove());
+  commonPins.forEach((marker) => marker.remove());
 };
 
 const initializeMap = () => {
@@ -35,7 +35,7 @@ const initializeMap = () => {
 };
 
 const getIcon = (isMain = false) => {
-  const currentIcon = isMain ? MainPinIcon : CommonPinIcon;
+  const currentIcon = isMain ? MainIcon : CommonIcon;
   return L.icon({
     iconUrl: currentIcon.URL,
     iconSize: currentIcon.SIZE,
@@ -47,7 +47,7 @@ const addPin = (coordinates, icon, isDraggable = false) => L.marker(coordinates,
 
 const addCommonPin = (coordinates) => addPin(coordinates, getIcon());
 
-const addMainPin = () => addPin(PIN_DEFAULT_VALUE, getIcon(true), true);
+const addMainPin = () => addPin(DEFAULT_PIN_COORDINATES, getIcon(true), true);
 
 const setCommonPins = (advertCards, callback) => {
   advertCards.forEach((card) => {
@@ -65,20 +65,9 @@ const setMainPin = (callback) => {
   });
 };
 
-const resetMainMarker = (callback) => {
-  mainPin.setLatLng(PIN_DEFAULT_VALUE);
+const resetMainPin = (callback) => {
+  mainPin.setLatLng(DEFAULT_PIN_COORDINATES);
   callback(mainPin.getLatLng());
 };
 
-const mapClosePopup = () => map.closePopup();
-
-export {
-  initializeMap,
-  setMainPin,
-  setCommonPins,
-  resetMainMarker,
-  setMapDefaultView,
-  removeCommonPins,
-  mapClosePopup,
-  MAX_NUMBER_PINS_ON_MAP
-};
+export {initializeMap, setMainPin, setCommonPins, resetMainPin, setMapDefaultView, removeCommonPins, MAX_COMMON_PINS_COUNT_ON_MAP};
