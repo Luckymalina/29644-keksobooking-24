@@ -25,7 +25,6 @@ const availableCapacityByRooms = {
   3: ['1', '2', '3'],
   100: ['0'],
 };
-
 const formElement = document.querySelector('form[name="advert-form"]');
 const titleElement = formElement.querySelector('input[name="title"]');
 const addressElement = formElement.querySelector('input[name="address"]');
